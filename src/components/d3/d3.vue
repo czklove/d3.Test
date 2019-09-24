@@ -106,52 +106,62 @@ export default {
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "b757aeec-a6e1-42b6-b6c7-1e7271a60225",
-          rela: "动作行为-途径方法"
+          rela: "动作行为-途径方法",
+          weight: 2,
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "0772365b-efaa-418d-85c3-c19c1320974c",
-          rela: "同类并列"
+          rela: "同类并列",
+          weight: 1,
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "bad47888-1a3a-441c-949c-5261bdd9757c",
-          rela: "领域-内容"
+          rela: "领域-内容",
+          weight: 3
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "8eceb72f-7dab-4300-8005-2229f2a48cf4",
-          rela: "主题词"
+          rela: "主题词",
+          weight: 1
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "bf1e93d2-69ac-42bb-ae0b-5cf99172b2fd",
-          rela: "对象-主体"
+          rela: "对象-主体",
+          weight: 1
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "55c3e34c-1c78-428a-998d-e4b6e1e7fa1a",
-          rela: "领域-内容"
+          rela: "领域-内容",
+          weight: 1
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "bc73430d-e84f-40f1-87f0-b23de2d7e75f",
-          rela: "对象-主体"
+          rela: "对象-主体",
+          weight: 1
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "40554fb4-7ef6-4017-be7e-9e700d0714c9",
-          rela: "内容-领域"
+          rela: "内容-领域",
+          weight: 1
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "013b39f8-89a0-4add-a046-6a09a55d9f01",
-          rela: "领域-内容"
+          rela: "领域-内容",
+          weight: 1
         },
         {
           source: "50b330c9-07ef-4ef2-ad53-81c2e2288137",
           target: "6c38e684-aa36-4c16-bec8-0fe58a5a35ee",
-          rela: "领域-内容"
+          rela: "领域-内容",
+          weight: 1
         }
       ],
       width: 1160,
@@ -268,7 +278,15 @@ export default {
           .attr("height", _self.height)
         // 通过布局来转换数据，然后进行绘制
         _self.simulation = d3.forceSimulation(_self.nodes)
-          .force("link", d3.forceLink(_self.links).distance(175))
+          .force("link", d3.forceLink(_self.links).distance((d)=>{
+            // 新增节点权重关系，值越大代表关系越密切
+            let wd = 175
+            if (d<5) {
+              return (1-(d.weight-1)*0.2)*wd  // 权重没增加1，则连接点短20%
+            } else {
+              return 0.2*wd
+            }
+          }))
           .force("charge", d3.forceManyBody().strength(-750))
           //.force("collide", d3.forceCollide().strength(-550))
           .force("center", d3.forceCenter(_self.width / 2, _self.height / 2));
